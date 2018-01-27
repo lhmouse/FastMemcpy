@@ -24,6 +24,16 @@
 #error it can only be compiled under windows or unix
 #endif
 
+#ifdef __MINGW32__
+/* On MinGW and mingw-w64 targets, `memcpy()` is imported from MSVCRT.DLL.
+ * With regard to benchmarking purposes, we have to eliminate the overhead
+ * of implicit importation by specifying `dllexport` explicitly.
+ *
+ * Reference: https://gcc.gnu.org/onlinedocs/gcc/Microsoft-Windows-Function-Attributes.html#index-dllimport-function-attribute
+ */
+__declspec(dllimport) extern void * memcpy(void *, const void *, size_t);
+#endif
+
 #include "FastMemcpy.h"
 
 unsigned int gettime()
